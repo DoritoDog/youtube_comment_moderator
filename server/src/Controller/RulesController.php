@@ -70,6 +70,7 @@ class RulesController extends AppController
         ->query()
         ->order(['id' => 'DESC'])
         ->first();
+        
       $this->set(['filter' => $filter]);
       $this->viewBuilder()->setOption('serialize', ['filter']);
     }

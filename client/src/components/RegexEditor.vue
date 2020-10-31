@@ -63,7 +63,7 @@ export default {
       if (!this.isEditable) {
         /*axios({
           method: 'get',
-          url: `http://localhost:8765/rules/edit/`,//?id=${this.id}&regex=${this.regex}`,
+          url: `https://api.yt-moderator.belgharbi.com/rules/edit/`,//?id=${this.id}&regex=${this.regex}`,
           headers: {
             'Accept': 'application/json'
           },
@@ -72,7 +72,7 @@ export default {
             id: '1'
           }
         }).then(r => console.log(r.data));*/
-         axios.get(`http://localhost:8765/rules/edit?id=${this.id}&regex=${this.regex}`, { headers: { 'Accept': 'application/json' } });
+         axios.get(`https://api.yt-moderator.belgharbi.com/rules/edit?id=${this.id}&regex=${this.regex}`, { headers: { 'Accept': 'application/json' } });
       }
     }
   }

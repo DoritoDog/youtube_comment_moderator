@@ -11,7 +11,7 @@ export default {
   computed: {
     View() {
       const page = routes[this.currentRoute] || "404";
-      return require(`./pages/${page}.vue`).default;
+      return require(`../src/pages/${page}.vue`).default;
     }
   },
 

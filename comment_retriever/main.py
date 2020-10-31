@@ -15,8 +15,8 @@ import json
 import requests
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
+from pyvirtualdisplay import Display
 
-# http://localhost:8765/comments/add
 def post(url, data):
     x = requests.post(url, data=data, headers={ 'Accept': 'application/json', 'Content-Type': 'application/json'})
     print(x.status_code)
@@ -27,17 +27,18 @@ def get_comments(driver, url, video_title):
         # Extract the elements storing the usernames and comments.
         username_elems = driver.find_elements_by_xpath('//a[@id="author-text"]')
         comment_elems = driver.find_elements_by_xpath('//*[@id="content-text"]')
+        avatar_elems = driver.find_elements_by_xpath('//*[@id="author-thumbnail"]/a/yt-img-shadow/img')
         date_elems = driver.find_elements_by_xpath('//*[@class="published-time-text above-comment style-scope ytd-comment-renderer"]/a')
     except exceptions.NoSuchElementException:
         print('Couldn\'t get a comment or username.')
 
     sys.stdout.reconfigure(encoding='utf-8')
     comments = []
-    for username, comment, date in zip(username_elems, comment_elems, date_elems):
+    for username, comment, avatar, date in zip(username_elems, comment_elems, avatar_elems, date_elems):
         comment_data = {
             'google_account': {
                 'username': username.text,
-                'avatar_url': '',
+                'avatar_url': avatar.get_attribute('src'),
                 'channel_url': username.get_attribute('href')
             },
             'video': {
@@ -64,18 +65,20 @@ def get_replies(driver, wait, time):
         except:
             continue
         
-        # try:
         if i >= 2:
             time.sleep(3)
             print('Getting more replies, {}'.format(i))
             more_replies_buttons = driver.find_elements_by_xpath('//*[@class="style-scope yt-next-continuation"]')
             for more_button in more_replies_buttons:
                 if more_button.text == 'Show more replies':
-                    more_button.click()
+                    try:
+                        more_button.click()
+                    except:
+                        print('Couldn\'t get more replies')
+                        continue
             time.sleep(2)
             print('Done for {}'.format(i))
-        # except:
-        #     print('Exception after getting more replies, {}'.format(i))
+
         time.sleep(1)
 
 def bypass_login(driver, wait, time):
@@ -95,7 +98,7 @@ def scroll_down(driver):
 
 # https://www.youtube.com/watch?v=p9a18OPYkG0
 def scrape(url):
-    driver = webdriver.Chrome('D:\Downloads\chromedriver\chromedriver.exe')
+    driver = webdriver.Chrome('/home/kareem/chromedriver')
     wait = WebDriverWait(driver, 10)
     
     driver.get(url)
@@ -128,15 +131,13 @@ def scrape(url):
         print(new_comments[0])
         lastCommentsLen = len(comments)
 
-    # comments = get_comments(driver, url, video_title)
-    # print(len(comments))
-    # data = json.dumps(comments)
-    # post('http://localhost:8765/comments/add', data)
+        data = json.dumps(new_comments)
+        post('https://api.yt-moderator.belgharbi.com/comments/add', data)
 
     driver.close()
 
 def scrape_new(url):
-    driver = webdriver.Chrome('D:\Downloads\chromedriver\chromedriver.exe')
+    driver = webdriver.Chrome('/home/kareem/chromedriver')
     wait = WebDriverWait(driver, 10)
     
     driver.get(url)
@@ -179,7 +180,3 @@ def scrape_new(url):
 
 if __name__ == "__main__":
     scrape(sys.argv[1])
-    quit()
-
-    data = json.dumps(comments)
-    post('http://localhost:8765/comments/add', data)

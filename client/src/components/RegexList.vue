@@ -19,7 +19,7 @@ export default {
   },
 
   created: function () {
-    axios.get("http://localhost:8765/rules/", { headers: { 'Accept': 'application/json' } })
+    axios.get("https://api.yt-moderator.belgharbi.com/rules/", { headers: { 'Accept': 'application/json' } })
          .then(response => {
            const filters = response.data.filters;
            filters.forEach(filter => {
@@ -32,16 +32,16 @@ export default {
 
   methods: {
     add: function() {
-      axios.get(`http://localhost:8765/rules/add?content=${this.content}`, { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' } })
+      axios.get(`https://api.yt-moderator.belgharbi.com/rules/add?content=${this.content}`, { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' } })
          .then(response => {
            const filter = response.data.filter;
            this.regexes.push({ index: this.regexes.length, text: filter.regex, id: filter.id });
          });
     },
     remove: function(data) {
-      axios.get(`http://localhost:8765/rules/delete?id=${data.id}`, { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' } })
+      axios.get(`https://api.yt-moderator.belgharbi.com/rules/delete?id=${data.id}`, { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' } })
            .then(response => {
-             console.log(response);
+             JSON.stringify(response);
              this.regexes.splice(data.index, 1);
            });
     }

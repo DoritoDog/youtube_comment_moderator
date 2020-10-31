@@ -24,7 +24,7 @@ export default {
   methods: {
     updateComments: function(status) {
       this.filter = status;
-      axios.get("http://localhost:8765/comments/status/" + status, { headers: { 'Accept': 'application/json' } })
+      axios.get("https://api.yt-moderator.belgharbi.com/comments/status/" + status, { headers: { 'Accept': 'application/json' } })
            .then(response => {
              this.comments = response.data.comments;
              this.comments.forEach(comment => {
@@ -53,6 +53,14 @@ export default {
         :comment-text="comment.text"
         :age="comment.age"
       />
+
+      <v-pagination class="u-center u-hide">
+        <v-pagination-item disabled>Prev</v-pagination-item>
+        <v-pagination-item selected>1</v-pagination-item>
+        <v-pagination-item>2</v-pagination-item>
+        <v-pagination-item>3</v-pagination-item>
+        <v-pagination-item>Next</v-pagination-item>
+      </v-pagination>
     </div>
   </main-layout>
 </template>

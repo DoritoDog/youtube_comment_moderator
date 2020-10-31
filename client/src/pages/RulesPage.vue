@@ -16,15 +16,14 @@ export default {
   },
 
   mounted: function () {
-    axios.get(`http://localhost:8765/settings?name=Max. Duplicates`, { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' } }).then(response => {
-      console.log(response);
+    axios.get(`https://api.yt-moderator.belgharbi.com/settings?name=Max. Duplicates`, { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' } }).then(response => {
       this.maxDuplicates = response.data.setting[0].value;
     });
   },
 
   methods: {
     setSetting(name, value) {
-      axios.get(`http://localhost:8765/settings/edit?name=${name}&value=${value}`, { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' } });
+      axios.get(`https://api.yt-moderator.belgharbi.com/settings/edit?name=${name}&value=${value}`, { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' } });
     }
   }
 };

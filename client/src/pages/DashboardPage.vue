@@ -18,7 +18,7 @@ export default {
   },
 
   created: function () {
-    axios.get("http://localhost:8765/statistics/", { headers: { 'Accept': 'application/json' } })
+    axios.get("https://api.yt-moderator.belgharbi.com/statistics/", { headers: { 'Accept': 'application/json' } })
          .then(response => {
            this.numSpamDeleted = response.data.spam;
            this.numBotsBanned = response.data.botsBanned;

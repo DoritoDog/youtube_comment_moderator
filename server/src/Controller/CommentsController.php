@@ -44,8 +44,10 @@ class CommentsController extends AppController
         $status = strtoupper(CaseString::kebab($status)->snake());
 
         $comments = $this->Comments->find()
-                                   ->where(['comments.status' => $status])
+                                   ->where(['Comments.status' => $status])
                                    ->contain(['GoogleAccounts'])
+                                   ->limit(30)
+                                   ->order(['created_at' => 'ASC'])
                                    ->toList();;
         
         $this->set(['comments' => $comments]);
@@ -103,20 +105,23 @@ class CommentsController extends AppController
                 $author = $accounts->findOrCreate(
                     ['channel_url' => $data['google_account']['channel_url']],
                     function ($account) use ($data, $accounts) {
-                        $account = $accounts->patchEntity($account, $data['google_account']);
+                        $author = $accounts->patchEntity($account, $data['google_account']);
                     }
                 );
 
                 $video = $videos->findOrCreate(
                     ['youtube_id' => $data['video']['youtube_id']],
                     function ($createdVideo) use ($data, $videos) {
-                        $video = $videos->patchEntity($video, $data['video']);
+                        var_dump($data['video']);
+                        $video = $videos->patchEntity($createdVideo, $data['video']);
                     }
                 );
 
                 $comment = $this->Comments->findOrCreate(
                     ['youtube_id' => $data['youtube_id']],
-                    function ($createdComment) use ($data) {
+                    function ($createdComment) use ($data, $author, $video) {
+                        $createdComment->author = $author;
+                        $createdComment->video = $video;
                         $comment = $this->Comments->patchEntity($createdComment, $data, ['fields' => ['text', 'youtube_id', 'url']]);
                     }
                 );
